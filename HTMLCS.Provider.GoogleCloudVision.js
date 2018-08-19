@@ -8,12 +8,19 @@ _global.HTMLCS.providers.gcv = function () {
     self.isSimilarAlt = function (altText, imageSource, beStrict, compareFunc) {
         var isSimilar = true;
         try {
-            var client = new vision.ImageAnnotatorClient();
+            var opts = null;
+            var envVar = process.env["GOOGLE_APPLICATION_CREDENTIALS"]
+            if (envVar && envVar.length > 0 && envVar.indexOf(".json") == -1){
+                opts = {credentials: JSON.parse(envVar)};
+            }
+            var client = new vision.ImageAnnotatorClient(opts);
             var results = -1;
             client.labelDetection(imageSource).then(function (res) {
                 results = res;
             });
-            Sync.loopWhile(function(){return results === -1;});
+            Sync.loopWhile(function () {
+                return results === -1;
+            });
 
             var labels = results[0].labelAnnotations.map(function (annotation) {
                 return annotation.description;
