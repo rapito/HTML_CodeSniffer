@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Only Notices</title>
+<!-- @HTMLCS_Test@
+Name: SC 1.1.1 Null Alt Text on Images and Areas
+Standard: WCAG2AAA
+Assert: No Error *.H37 on #hasAltText
+Assert: Error *.H37 on #hasNoAltText
+Assert: Warning *.H67.2 on #hasEmptyAltText
+Assert: No Warning *.H67.1 on #hasEmptyAltTextWithTitle
+Assert: Error *.H67.1 on #hasEmptyAltTextWithTitle
+Assert: Warning *.H67.2 on #hasSpacedAltText
+Assert: No Error *.H24 on #areaWithAlt
+Assert: Error *.H24 on #areaWithNoAlt
+Assert: Error *.H24 on #areaWithEmptyAlt
+Assert: Warning *G94.Image on #hasNonMatchingAlt
+Assert: No Warning *G94.Image on #hasMatchingAlt
+-->
+</head>
+<body>
+<img id="hasMatchingAlt" alt="This is a car" src="https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?cs=srgb&dl=car-vehicle-luxury-112460.jpg&fm=jpg"/>
+
+</body>
+</html>

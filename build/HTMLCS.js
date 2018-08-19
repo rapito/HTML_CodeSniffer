@@ -4889,6 +4889,7 @@ _global.HTMLCS.analyzer.img = function() {
     self.processor = {
         isSimilarAlt: function(altText, imageSource, beStrict) {
             var result = false;
+            if (!self.providers() || self.providers().length === 0) return !beStrict;
             self.providers().forEach(function(provider) {
                 if (result) return;
                 result = result || provider.isSimilarAlt(altText, imageSource, beStrict, self.isSimilarTagsToAlt);
