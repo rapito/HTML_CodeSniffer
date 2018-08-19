@@ -4884,7 +4884,7 @@ _global.HTMLCS.analyzer.img = function() {
     };
     self.providers = function() {
         if (!self.PROVIDERS_ON) return [];
-        return [ _global.HTMLCS.providers.ar, _global.HTMLCS.providers.gcv ];
+        return [ _global.HTMLCS.providers.gcv ];
     };
     self.processor = {
         isSimilarAlt: function(altText, imageSource, beStrict) {
