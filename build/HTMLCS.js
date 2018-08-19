@@ -4884,7 +4884,7 @@ _global.HTMLCS.analyzer.img = function() {
     };
     self.providers = function() {
         if (!self.PROVIDERS_ON) return [];
-        return [ _global.HTMLCS.providers.ar, _global.HTMLCS.providers.gcv ];
+        return [ _global.HTMLCS.providers.gcv, _global.HTMLCS.providers.ar ];
     };
     self.processor = {
         isSimilarAlt: function(altText, imageSource, beStrict) {
@@ -5011,7 +5011,7 @@ _global.HTMLCS.providers.ar = function() {
             });
             isSimilar = compareFunc(labels, altText);
         } catch (e) {
-            console.error("HTMLCS.providers.gcv.isSimilarAlt", e);
+            console.error("HTMLCS.providers.ar.isSimilarAlt", e);
             if (beStrict) isSimilar = false;
         }
         return isSimilar;

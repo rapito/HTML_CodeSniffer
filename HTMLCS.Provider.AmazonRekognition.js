@@ -55,7 +55,7 @@ _global.HTMLCS.providers.ar = function () {
             });
             isSimilar = compareFunc(labels, altText)
         } catch (e) {
-            console.error('HTMLCS.providers.gcv.isSimilarAlt', e);
+            console.error('HTMLCS.providers.ar.isSimilarAlt', e);
             if (beStrict) isSimilar = false;
         }
 
