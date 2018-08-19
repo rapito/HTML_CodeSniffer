@@ -42,7 +42,12 @@ app.post('/analyze', upload.single('file'), function (req, res, next) {
     window = dom.window;
     document = dom.window.document;
 
-    cs.HTMLCS.analyzer.img.off();
+    if(process.env.ANALYZER){
+        cs.HTMLCS.analyzer.img.on();
+    } else {
+        cs.HTMLCS.analyzer.img.off();
+    }
+
     cs.HTMLCS_RUNNER.run(standard, function (messages, error) {
         res.send({
             messages: messages.map(function (msg) {
