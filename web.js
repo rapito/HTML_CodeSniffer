@@ -43,8 +43,10 @@ app.post('/analyze', upload.single('file'), function (req, res, next) {
     document = dom.window.document;
 
     if(process.env.ANALYZER){
+        console.log('analyzer is on!');
         cs.HTMLCS.analyzer.img.on();
     } else {
+        console.log('analyzer is off!');
         cs.HTMLCS.analyzer.img.off();
     }
 
