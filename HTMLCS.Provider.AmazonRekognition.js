@@ -15,21 +15,18 @@ _global.HTMLCS.providers.ar = function () {
     };
 
     self.isSimilarAlt = function (altText, imageSource, beStrict, compareFunc) {
+        console.log('HTMLCS.Provider.AmazonRekognition.isSimilarAlt', altText, imageSource, beStrict);
         var isSimilar = true;
         try {
-            var opts = null;
-            var envVar = process.env["GOOGLE_APPLICATION_CREDENTIALS"]
-            if (envVar && envVar.length > 0 && envVar.indexOf(".json") == -1) {
-                opts = {credentials: JSON.parse(envVar)};
-            }
-
             var client = new AWS.Rekognition({
-                region: 'us-east-1'
+                region: 'us-east-1',
+                accessKeyId: process.env["AWS_ACCESS_KEY_ID"],
+                secretAccessKeyId: process.env["AWS_SECRET_ACCESS_KEY"]
             });
+
             var results = -1;
-
-
             var imageBytes = -1;
+
             self.downloadImage(imageSource).then(function (bytes) {
                 imageBytes = bytes;
             });
@@ -55,10 +52,11 @@ _global.HTMLCS.providers.ar = function () {
             });
             isSimilar = compareFunc(labels, altText)
         } catch (e) {
-            console.error('HTMLCS.providers.ar.isSimilarAlt', e);
+            console.error('HTMLCS.Provider.AmazonRekognition.isSimilarAlt.error', e);
             if (beStrict) isSimilar = false;
         }
 
+        console.log('HTMLCS.Provider.AmazonRekognition.isSimilarAlt.result', isSimilar);
         return isSimilar;
 
     };

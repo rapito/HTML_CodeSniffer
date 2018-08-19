@@ -1,5 +1,5 @@
 var HTMLCS_RUNNER = _global.HTMLCS_RUNNER = new function () {
-    this.run = function (standard, callback) {
+    this.run = function (standard, callback, skipLog) {
         var self = this;
 
         HTMLCS = _global.HTMLCS || HTMLCS;
@@ -13,19 +13,19 @@ var HTMLCS_RUNNER = _global.HTMLCS_RUNNER = new function () {
             msgCount[HTMLCS.NOTICE] = [];
 
             for (var i = 0; i < length; i++) {
-                msgCount[messages[i].type].push(self.output(messages[i]));
+                msgCount[messages[i].type].push(self.output(messages[i], skipLog));
             }
             if (callback) callback(messages, null)
-            console.log('done');
+            if(!skipLog) console.log('done');
         }, function () {
             var error = 'Something in HTML_CodeSniffer failed to parse. Cannot run.';
             console.log(error);
             if (callback) callback(null, error)
-            console.log('done');
+            if(!skipLog) console.log('done');
         }, 'en');
     };
 
-    this.output = function (msg) {
+    this.output = function (msg, skipLog) {
         // Simple output for now.
         var typeName = 'UNKNOWN';
         switch (msg.type) {
@@ -60,7 +60,7 @@ var HTMLCS_RUNNER = _global.HTMLCS_RUNNER = new function () {
             html = node.outerHTML;
         }
         var s = '[HTMLCS] ' + typeName + '|' + msg.code + '|' + nodeName + '|' + elementId + '|' + msg.msg + '|' + html;
-        console.log(s);
+        if(!skipLog) console.log(s);
         return s;
     };
 

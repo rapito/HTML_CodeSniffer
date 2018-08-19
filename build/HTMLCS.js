@@ -4884,7 +4884,7 @@ _global.HTMLCS.analyzer.img = function() {
     };
     self.providers = function() {
         if (!self.PROVIDERS_ON) return [];
-        return [ _global.HTMLCS.providers.gcv, _global.HTMLCS.providers.ar ];
+        return [ _global.HTMLCS.providers.ar, _global.HTMLCS.providers.gcv ];
     };
     self.processor = {
         isSimilarAlt: function(altText, imageSource, beStrict) {
@@ -4929,11 +4929,12 @@ var Sync = require("deasync");
 _global.HTMLCS.providers.gcv = function() {
     var self = {};
     self.isSimilarAlt = function(altText, imageSource, beStrict, compareFunc) {
+        console.log("HTMLCS.Provider.GoogleCloudVision", altText, imageSource, beStrict);
         var isSimilar = true;
         try {
             var opts = null;
             var envVar = process.env["GOOGLE_APPLICATION_CREDENTIALS"];
-            if (envVar && envVar.length > 0 && envVar.indexOf(".json") == -1) {
+            if (envVar && envVar.length > 0 && envVar.indexOf(".json") === -1) {
                 opts = {
                     credentials: JSON.parse(envVar)
                 };
@@ -4951,9 +4952,10 @@ _global.HTMLCS.providers.gcv = function() {
             });
             isSimilar = compareFunc(labels, altText);
         } catch (e) {
-            console.error("HTMLCS.providers.gcv.isSimilarAlt", e);
+            console.error("HTMLCS.Provider.GoogleCloudVision.isSimilarAlt.error", e);
             if (beStrict) isSimilar = false;
         }
+        console.log("HTMLCS.Provider.GoogleCloudVision.isSimilarAlt.result", isSimilar);
         return isSimilar;
     };
     return self;
@@ -4975,17 +4977,13 @@ _global.HTMLCS.providers.ar = function() {
         }).then(response => response.data);
     };
     self.isSimilarAlt = function(altText, imageSource, beStrict, compareFunc) {
+        console.log("HTMLCS.Provider.AmazonRekognition.isSimilarAlt", altText, imageSource, beStrict);
         var isSimilar = true;
         try {
-            var opts = null;
-            var envVar = process.env["GOOGLE_APPLICATION_CREDENTIALS"];
-            if (envVar && envVar.length > 0 && envVar.indexOf(".json") == -1) {
-                opts = {
-                    credentials: JSON.parse(envVar)
-                };
-            }
             var client = new AWS.Rekognition({
-                region: "us-east-1"
+                region: "us-east-1",
+                accessKeyId: process.env["AWS_ACCESS_KEY_ID"],
+                secretAccessKeyId: process.env["AWS_SECRET_ACCESS_KEY"]
             });
             var results = -1;
             var imageBytes = -1;
@@ -5011,16 +5009,17 @@ _global.HTMLCS.providers.ar = function() {
             });
             isSimilar = compareFunc(labels, altText);
         } catch (e) {
-            console.error("HTMLCS.providers.ar.isSimilarAlt", e);
+            console.error("HTMLCS.Provider.AmazonRekognition.isSimilarAlt.error", e);
             if (beStrict) isSimilar = false;
         }
+        console.log("HTMLCS.Provider.AmazonRekognition.isSimilarAlt.result", isSimilar);
         return isSimilar;
     };
     return self;
 }();
 
 var HTMLCS_RUNNER = _global.HTMLCS_RUNNER = new function() {
-    this.run = function(standard, callback) {
+    this.run = function(standard, callback, skipLog) {
         var self = this;
         HTMLCS = _global.HTMLCS || HTMLCS;
         HTMLCS.process(standard, document, function() {
@@ -5031,18 +5030,18 @@ var HTMLCS_RUNNER = _global.HTMLCS_RUNNER = new function() {
             msgCount[HTMLCS.WARNING] = [];
             msgCount[HTMLCS.NOTICE] = [];
             for (var i = 0; i < length; i++) {
-                msgCount[messages[i].type].push(self.output(messages[i]));
+                msgCount[messages[i].type].push(self.output(messages[i], skipLog));
             }
             if (callback) callback(messages, null);
-            console.log("done");
+            if (!skipLog) console.log("done");
         }, function() {
             var error = "Something in HTML_CodeSniffer failed to parse. Cannot run.";
             console.log(error);
             if (callback) callback(null, error);
-            console.log("done");
+            if (!skipLog) console.log("done");
         }, "en");
     };
-    this.output = function(msg) {
+    this.output = function(msg, skipLog) {
         var typeName = "UNKNOWN";
         switch (msg.type) {
           case HTMLCS.ERROR:
@@ -5072,7 +5071,7 @@ var HTMLCS_RUNNER = _global.HTMLCS_RUNNER = new function() {
             html = node.outerHTML;
         }
         var s = "[HTMLCS] " + typeName + "|" + msg.code + "|" + nodeName + "|" + elementId + "|" + msg.msg + "|" + html;
-        console.log(s);
+        if (!skipLog) console.log(s);
         return s;
     };
 }();

@@ -42,7 +42,7 @@ app.post('/analyze', upload.single('file'), function (req, res, next) {
     window = dom.window;
     document = dom.window.document;
 
-    if(process.env.ANALYZER){
+    if(true || process.env.ANALYZER){
         console.log('analyzer is on!');
         cs.HTMLCS.analyzer.img.on();
     } else {
@@ -57,7 +57,7 @@ app.post('/analyze', upload.single('file'), function (req, res, next) {
                 return msg;
             }), error: error
         });
-    });
+    }, true);
     if (filepath) fs.unlink(filepath);
 });
 
