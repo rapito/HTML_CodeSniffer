@@ -54,5 +54,7 @@ app.post('/analyze', upload.single('file'), function (req, res, next) {
     if (filepath) fs.unlink(filepath);
 });
 
-app.listen(3000);
+var port = process.env.PORT || 3000;
+
+app.listen(port);
 console.log('listening now!');
