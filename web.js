@@ -50,7 +50,7 @@ app.post('/analyze', upload.single('file'), function (req, res, next) {
                 return msg;
             }), error: error
         });
-    })
+    });
     if (filepath) fs.unlink(filepath);
 });
 
