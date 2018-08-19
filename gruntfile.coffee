@@ -11,31 +11,6 @@ module.exports = (grunt)->
         'Contrib/PhantomJS/*.js'
       ]
 
-    concat:
-      options:
-        sourceMap: true
-      js:
-        src: [
-          'Translations/*.js'
-          'Standards/**/*.js'
-          './HTMLCS.js'
-          './HTMLCS.Util.js'
-          './HTMLCS.Analyzer.js'
-          './HTMLCS.Analyzer.Img.js'
-          './HTMLCS.Provider.GoogleCloudVision.js'
-          'Contrib/PhantomJS/runner.js'
-          'Auditor/HTMLCSAuditor.js'
-        ],
-        dest: 'build/HTMLCS.merged.js'
-
-    babel:
-      dist:
-        options:
-          sourceMap: true,
-          inputSourceMap: grunt.file.readJSON('build/HTMLCS.merged.js.map')
-        src: ['build/HTMLCS.merged.js'],
-        dest: 'build/HTMLCS.js'
-
     uglify:
       debug:
         options:
@@ -128,7 +103,6 @@ module.exports = (grunt)->
   grunt.registerTask 'build', ['uglify:dist', 'copy:dist']
   grunt.registerTask 'build-bookmarklet', ['uglify:bookmarklet', 'copy:dist']
   grunt.registerTask 'build-debug', ['uglify:debug', 'copy:dist']
-  grunt.registerTask 'build-babel', ['concat','babel', 'copy:dist']
 
 
 #a.HTMLCS.providers.gcv.isSimilarAlt("car", "https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?cs=srgb&dl=car-vehicle-luxury-112460.jpg&fm=jpg", true, a.HTMLCS.analyzer.img.isSimilarTagsToAlt)
