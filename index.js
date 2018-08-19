@@ -1,3 +1,4 @@
+// import 'nodent-runtime'
 var fs         = require('fs');
 var scriptPath = __dirname+'/build/HTMLCS.js';
 

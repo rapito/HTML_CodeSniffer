@@ -223,7 +223,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle4_Guideline4_1_4_1_2 = {
                     } else if (requiredName === 'label') {
                         // Label element. Re-use the label associating
                         // functions in SC 1.3.1.
-                        var hasLabel = HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_3_1_3_1.testLabelsOnInputs(element, top, true);
+                        var hasLabel = _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_3_1_3_1.testLabelsOnInputs(element, top, true);
                         if (hasLabel !== false) {
                             break;
                         }

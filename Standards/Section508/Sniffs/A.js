@@ -301,7 +301,7 @@ _global.HTMLCS_Section508_Sniffs_A = {
      */
     addMediaAlternativesResults: function(top)
     {
-        var errors = HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1.testMediaTextAlternatives(top);
+        var errors = _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1.testMediaTextAlternatives(top);
 
         for (var i = 0; i < errors.object.missingBody.length; i++) {
             HTMLCS.addMessage(HTMLCS.ERROR, errors.object.missingBody[i], 'Object elements must contain a text alternative after all other alternatives are exhausted.', 'Object.MissingBody');

@@ -30,7 +30,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_3_1_3_1_AAA = {
      */
     process: function(element, top)
     {
-        var sniff = HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_3_1_3_1;
+        var sniff = _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_3_1_3_1;
 
         if (element === top) {
             sniff.testHeadingOrder(top, HTMLCS.ERROR);

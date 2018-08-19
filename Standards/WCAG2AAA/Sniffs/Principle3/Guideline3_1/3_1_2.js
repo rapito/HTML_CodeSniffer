@@ -38,7 +38,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle3_Guideline3_1_3_1_2 = {
         HTMLCS.addMessage(HTMLCS.NOTICE, top,  _global.HTMLCS.getTranslation("3_1_2_H58"), 'H58');
 
         // Alias the SC 3.1.1 object, which contains our "valid language tag" test.
-        var sc3_1_1 = HTMLCS_WCAG2AAA_Sniffs_Principle3_Guideline3_1_3_1_1;
+        var sc3_1_1 = _global.HTMLCS_WCAG2AAA_Sniffs_Principle3_Guideline3_1_3_1_1;
 
         // Note, going one element beyond the end, so we can test the top element
         // (which doesn't get picked up by the above query). Instead of going off the

@@ -12,6 +12,8 @@
  */
 
 _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
+    useCallback: true,
+
     /**
      * Determines the elements to register for processing.
      *
@@ -20,8 +22,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @returns {Array} The list of elements.
      */
-    register: function()
-    {
+    register: function () {
         return [
             '_top',
             'img'
@@ -35,8 +36,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      * @param {DOMNode} element The element registered.
      * @param {DOMNode} top     The top element of the tested code.
      */
-    process: function(element, top)
-    {
+    process: function (element, top, cb) {
         if (element === top) {
             this.addNullAltTextResults(top);
             this.addMediaAlternativesResults(top);
@@ -47,7 +47,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                 case 'img':
                     this.testLinkStutter(element);
                     this.testLongdesc(element);
-                break;
+                    break;
             }//end if
         }//end if
     },
@@ -60,8 +60,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @param {DOMNode} element The element to test.
      */
-    addNullAltTextResults: function(top)
-    {
+    addNullAltTextResults: function (top) {
         var errors = this.testNullAltText(top);
 
         for (var i = 0; i < errors.img.emptyAltInLink.length; i++) {
@@ -77,7 +76,11 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
         }
 
         for (var i = 0; i < errors.img.missingAlt.length; i++) {
-            HTMLCS.addMessage(HTMLCS.ERROR, errors.img.missingAlt[i],  _global.HTMLCS.getTranslation("1_1_1_H37"), 'H37');
+            HTMLCS.addMessage(HTMLCS.ERROR, errors.img.missingAlt[i], _global.HTMLCS.getTranslation("1_1_1_H37"), 'H37');
+        }
+
+        for (var i = 0; i < errors.img.generalAltMeaning.length; i++) {
+            HTMLCS.addMessage(HTMLCS.WARNING, errors.img.generalAltMeaning[i], _global.HTMLCS.getTranslation("1_1_1_G94.Image"), 'G94.Image');
         }
 
         for (var i = 0; i < errors.img.generalAlt.length; i++) {
@@ -113,11 +116,11 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @returns {Object} A structured list of errors.
      */
-    testNullAltText: function(top)
-    {
+    testNullAltText: function (top) {
         var errors = {
             img: {
                 generalAlt: [],
+                generalAltMeaning: [],
                 missingAlt: [],
                 ignored: [],
                 nullAltWithTitle: [],
@@ -138,10 +141,11 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
         for (var el = 0; el < elements.length; el++) {
             var element = elements[el];
 
-            var nodeName      = element.nodeName.toLowerCase();
+            var nodeName = element.nodeName.toLowerCase();
             var linkOnlyChild = false;
-            var missingAlt    = false;
-            var nullAlt       = false;
+            var missingAlt = false;
+            var nullAlt = false;
+            var similarAlt = true;
 
             if (element.parentNode.nodeName.toLowerCase() === 'a') {
                 var prevNode = HTMLCS.util.getPreviousSiblingElement(element, null);
@@ -167,6 +171,8 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                 missingAlt = true;
             } else if (!element.getAttribute('alt') || HTMLCS.util.isStringEmpty(element.getAttribute('alt')) === true) {
                 nullAlt = true;
+            } else {
+                similarAlt = HTMLCS.analyzer.img.isSimilarAlt(element.getAttribute('alt'), element.getAttribute('src'))
             }
 
             // Now determine which test(s) should fire.
@@ -177,6 +183,9 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                         // only content in a link (as the link would not have a text
                         // alternative).
                         errors.img.emptyAltInLink.push(element.parentNode);
+                        if (!similarAlt) {
+                            errors.img.generalAltMeaning.push(element.parentNode);
+                        }
                     } else if (missingAlt === true) {
                         errors.img.missingAlt.push(element);
                     } else if (nullAlt === true) {
@@ -190,7 +199,11 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                     } else {
                         errors.img.generalAlt.push(element);
                     }
-                break;
+
+                    if (!similarAlt && errors.img.generalAltMeaning.indexOf(element.parentNode) === -1) {
+                        errors.img.generalAltMeaning.push(element);
+                    }
+                    break;
 
                 case 'input':
                     // Image submit buttons.
@@ -199,7 +212,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                     } else {
                         errors.inputImage.generalAlt.push(element);
                     }
-                break;
+                    break;
 
                 case 'area':
                     // Area tags in a client-side image map.
@@ -208,11 +221,11 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                     } else {
                         errors.inputImage.generalAlt.push(element);
                     }
-                break;
+                    break;
 
                 default:
                     // No other tags defined.
-                break;
+                    break;
             }//end switch
         }//end for
 
@@ -230,8 +243,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @returns void
      */
-    testLongdesc: function(element)
-    {
+    testLongdesc: function (element) {
         HTMLCS.addMessage(HTMLCS.NOTICE, element, _global.HTMLCS.getTranslation("1_1_1_G73,G74"), 'G73,G74');
     },
 
@@ -248,8 +260,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @param {DOMNode} element The image element to test.
      */
-    testLinkStutter: function(element)
-    {
+    testLinkStutter: function (element) {
         if (element.parentNode.nodeName.toLowerCase() === 'a') {
             var anchor = element.parentNode;
 
@@ -341,8 +352,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @param {DOMNode} element The element to test.
      */
-    addMediaAlternativesResults: function(top)
-    {
+    addMediaAlternativesResults: function (top) {
         var errors = this.testMediaTextAlternatives(top);
 
         for (var i = 0; i < errors.object.missingBody.length; i++) {
@@ -366,8 +376,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
         }
     },
 
-    testMediaTextAlternatives: function(top)
-    {
+    testMediaTextAlternatives: function (top) {
         var errors = {
             object: {
                 missingBody: [],
@@ -383,7 +392,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
         var elements = HTMLCS.util.getAllElements(top, 'object');
 
         for (var el = 0; el < elements.length; el++) {
-            var element  = elements[el];
+            var element = elements[el];
             var nodeName = element.nodeName.toLowerCase();
 
             var childObject = element.querySelector('object');
@@ -408,7 +417,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
         for (var el = 0; el < elements.length; el++) {
             // Test firstly for whether we have an object alternative.
             var childObject = element.querySelector('object');
-            var hasError    = false;
+            var hasError = false;
 
             // If we have an object as our alternative, skip it. Pass the blame onto
             // the child. (This is a special case: those that don't understand APPLET
@@ -448,10 +457,9 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
      *
      * @returns {String} The alt text.
      */
-    _getLinkAltText: function(anchor)
-    {
+    _getLinkAltText: function (anchor) {
         var anchor = anchor.cloneNode(true);
-        var nodes  = [];
+        var nodes = [];
         for (var i = 0; i < anchor.childNodes.length; i++) {
             nodes.push(anchor.childNodes[i]);
         }
@@ -469,7 +477,7 @@ _global.HTMLCS_WCAG2AAA_Sniffs_Principle1_Guideline1_1_1_1_1 = {
                             alt = '';
                         } else {
                             // Trim the alt text.
-                            alt = alt.replace(/^\s+|\s+$/g,'');
+                            alt = alt.replace(/^\s+|\s+$/g, '');
                         }
 
                         break;

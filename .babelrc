@@ -1,0 +1,12 @@
+{
+    "presets": [
+        ["env", {
+            "exclude": ["transform-regenerator"]
+        }]
+    ],
+    "plugins": [
+        ["fast-async", {
+            "useRuntimeModule": true
+        }]
+    ]
+}

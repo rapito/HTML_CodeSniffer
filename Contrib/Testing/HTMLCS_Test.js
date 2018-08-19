@@ -2,6 +2,10 @@ var page = require('webpage').create(),
     system = require('system'),
     testfile, address, standard, reportType,
     fs = require('fs');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+// var cs = require('../../build/HTMLCS.js')
 
 var messages = [];
 var testData = {
@@ -14,11 +18,11 @@ if (system.args.length < 2 || system.args.length > 2) {
     console.log('Usage: phantomjs HTMLCS_Test.js test_name');
     phantom.exit(255);
 } else {
-    testfile    = system.args[1];
+    testfile = system.args[1];
     if (testfile.substr(-5) !== '.html') {
         testfile += '.html';
     }
-    address     = 'file://' + fs.absolute('../../') + 'Tests/' + testfile;
+    address = 'file://' + fs.absolute('../../') + 'Tests/' + testfile;
     var content = fs.read('../../Tests/' + testfile);
 
     if (!content) {
@@ -30,22 +34,22 @@ if (system.args.length < 2 || system.args.length > 2) {
             console.log('No HTMLCS_Test banner?');
             phantom.exit(2);
         }
-        var indexEnd   = content.indexOf('\n-->', indexStart + 1);
+        var indexEnd = content.indexOf('\n-->', indexStart + 1);
 
         var testContent = content.substr(indexStart, indexEnd - indexStart);
         var testContent = testContent.split("\n");
         testContent.splice(0, 1);
-        
+
         for (var i = 0; i < testContent.length; i++) {
             var words = testContent[i].split(' ');
             switch (words[0]) {
                 case 'Name:':
                     testData.name = words.slice(1, words.length).join(' ');
-                break;
+                    break;
 
                 case 'Standard:':
                     testData.standard = words.slice(1, words.length).join(' ');
-                break;
+                    break;
 
                 case 'Assert:':
                     var assertion = {
@@ -78,13 +82,13 @@ if (system.args.length < 2 || system.args.length > 2) {
                     }
 
                     testData.assertions.push(assertion);
-                break;
+                    break;
             }//end switch
         }//end for
     }//end if
 
     // Default reporter.
-    var reportDefaultFn = function() {
+    var reportDefaultFn = function () {
         var assertion, thisMsg;
         for (var assert = 0; assert < testData.assertions.length; assert++) {
             assertion = testData.assertions[assert];
@@ -103,7 +107,7 @@ if (system.args.length < 2 || system.args.length > 2) {
         }
 
         var failures = 0;
-                console.info('Results for ' + testData.name + ' (' + testData.standard + '):');
+        console.info('Results for ' + testData.name + ' (' + testData.standard + '):');
         for (var assert = 0; assert < testData.assertions.length; assert++) {
             assertion = testData.assertions[assert];
             if (assertion.triggered !== assertion.expected) {
@@ -121,7 +125,7 @@ if (system.args.length < 2 || system.args.length > 2) {
             console.info('FAILURES!');
             retval = 1;
         }
-        
+
         console.info('Assertions: ' + testData.assertions.length + ', Passed: ' + (testData.assertions.length - failures) + ', Failed: ' + failures);
         phantom.exit(retval);
     };
@@ -146,7 +150,11 @@ if (system.args.length < 2 || system.args.length > 2) {
                     }
                 };
 
-                page.injectJs('../../build/HTMLCS.js');
+                // page.injectJs('../../build/HTMLCS.js');
+                console.log(dom);
+
+                const dom = new JSDOM(content);
+                // window = dom.window
 
                 // Now Run. Note that page.evaluate() function is sanboxed to
                 // the loaded page's context. We can't pass any variable to it.
@@ -155,13 +163,15 @@ if (system.args.length < 2 || system.args.length > 2) {
                     case 'WCAG2AA':
                     case 'WCAG2AAA':
                     case 'Section508':
-                        page.evaluate(function(standard) {HTMLCS_RUNNER.run(standard);}, testData.standard);
-                    break;
+                        cs.HTMLCS_RUNNER.run(standard);
+                        break;
                     default:
                         console.log('Unknown standard.');
                         phantom.exit(2);
-                    break;
+                        break;
                 }
+
+
             }, 200);
         }//end if
     });//end
