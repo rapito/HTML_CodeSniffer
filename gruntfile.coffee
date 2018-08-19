@@ -29,6 +29,7 @@ module.exports = (grunt)->
             'HTMLCS.Analyzer.js'
             'HTMLCS.Analyzer.Img.js'
             'HTMLCS.Provider.GoogleCloudVision.js'
+            'HTMLCS.Provider.AmazonRekognition.js'
             'Contrib/PhantomJS/runner.js'
             'Auditor/HTMLCSAuditor.js'
           ]
@@ -45,6 +46,7 @@ module.exports = (grunt)->
             'HTMLCS.Analyzer.js'
             'HTMLCS.Analyzer.Img.js'
             'HTMLCS.Provider.GoogleCloudVision.js'
+            'HTMLCS.Provider.AmazonRekognition.js'
             'Contrib/PhantomJS/runner.js'
             'Auditor/HTMLCSAuditor.js'
           ],
@@ -57,11 +59,12 @@ module.exports = (grunt)->
             'Translations/*.js'
             'Standards/**/*.js'
             'HTMLCS.js'
-            'Contrib/PhantomJS/runner.js'
             'HTMLCS.Util.js'
             'HTMLCS.Analyzer.js'
             'HTMLCS.Analyzer.Img.js'
             'HTMLCS.Provider.GoogleCloudVision.js'
+            'HTMLCS.Provider.AmazonRekognition.js'
+            'Contrib/PhantomJS/runner.js'
             'Auditor/Auditor_with_beacon.js'
           ],
 

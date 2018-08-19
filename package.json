@@ -20,6 +20,8 @@
   "homepage": "http://squizlabs.github.io/HTML_CodeSniffer/",
   "dependencies": {
     "@google-cloud/vision": "^0.21.0",
+    "aws-sdk": "^2.296.0",
+    "axios": "^0.18.0",
     "deasync": "^0.1.13",
     "express": "^4.16.3",
     "fast-async": "^6.3.7",
@@ -30,7 +32,8 @@
     "jsdom": "^11.12.0",
     "multer": "^1.3.1",
     "nodent-runtime": "^3.2.1",
-    "sync": "^0.2.5"
+    "sync": "^0.2.5",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
