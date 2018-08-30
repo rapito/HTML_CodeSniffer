@@ -14,6 +14,15 @@ Changes on this branch:
 - Uses Amazon Rekognition + Google Cloud Vision API to analyze images and compare ```<img>``` elements and their alt
   attribute against the actual content of the image.
 
+## Pre-requisites
+
+- Obtain Google Cloud Vision Credentials and:
+    - `export GOOGLE_APPLICATION_CREDENTIALS={your-credentials-json-file}`
+
+- Obtain Amazon Rekognition Credentials and:
+    - `export AWS_ACCESS_KEY_ID={your-aws-access-key-id}`
+    - `export AWS_SECRET_ACCESS_KEY={your-aws-secret-access-key}`
+
 ## Build
 
 - `npm install`
